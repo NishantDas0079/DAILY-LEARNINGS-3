@@ -134,3 +134,8 @@ Modern trend: Hybrid (Bytecode + VM + JIT) → Best of both worlds.
 
 
 ---
+
+
+
+
+From High-Level Language to Executable + Platform Dependence
