@@ -1,4 +1,4 @@
-# Compilers, Interpreters & Language Working
+# Compilers, Interpreters & Language Working (07/09/25) 
 
 
 
@@ -251,7 +251,7 @@ Modern JIT compilers (Java HotSpot, PyPy, V8 for JS) bridge the gap: portability
 
 
 
-# AI, Data Science, and Acceleration 
+# AI, Data Science, and Acceleration (10/09/25 to 11/09/25) 
 
 
 
@@ -530,3 +530,139 @@ http://<AWS-Public-IP>:<NodePort>
 # Multiple Approaches for hosting website in AWS
 
 Apache (Service) → Docker → Minikube → Kubernetes → AWS private cloud hosting.
+
+
+
+# All about Traefik and FRP in AWS
+
+
+🚦 Traefik in AWS
+
+🔹 What is Traefik?
+
+A modern reverse proxy + load balancer + ingress controller.
+
+Works inside Kubernetes (like K3s, EKS) and in standalone Docker/VM setups.
+
+Automatically configures routes via service discovery (Docker, K8s, Consul, etc.).
+
+
+🔹 Use Cases in AWS:
+
+1. Ingress Controller in K3s/EKS
+
+Routes traffic from AWS Load Balancer → Kubernetes services.
+
+Supports HTTPS via Let’s Encrypt out of the box.
+
+
+
+2. Reverse Proxy for Microservices on EC2/Docker :-
+
+Instead of configuring Nginx/Apache manually, Traefik auto-discovers containers.
+
+
+
+3. Load Balancing Across Services :-
+
+Traefik balances requests across multiple EC2 instances / pods.
+
+
+
+4. Security :- 
+
+TLS termination (HTTP → HTTPS).
+
+Rate limiting, middleware, authentication.
+
+
+
+
+✅ Example:
+
+AWS VM runs K3s.
+
+Traefik is default ingress in K3s.
+
+User requests → AWS Public IP / Domain → Traefik Ingress → Routes to correct Nginx Service.
+
+
+
+---
+
+🔌 FRP (Fast Reverse Proxy)
+
+🔹 What is FRP?
+
+A reverse proxy application to expose a local (private) service to the public internet.
+
+Commonly used when:
+
+The service runs behind NAT/Firewall.
+
+You don’t have a public IP.
+
+
+
+🔹 Components:
+
+1. FRP Server (frps)
+
+Runs on a public server (e.g., AWS VM with public IP).
+
+Listens for incoming requests.
+
+
+
+2. FRP Client (frpc) :- 
+
+Runs on the local machine (private LAN / localhost).
+
+Connects to the FRP server.
+
+Tunnels requests from the public server back to the local app.
+
+
+
+
+🔹 Workflow:
+
+User → AWS Public IP:Port (frps) → FRP Client → Local Service (e.g., Nginx at localhost:8080).
+
+
+
+---
+
+🔹 Use Cases of FRP:
+
+Expose Localhost Websites: Host web apps running on laptop → accessible via AWS.
+
+Testing Webhooks: Receive GitHub/Stripe webhooks on local machine without deploying.
+
+Private Cloud → Public Internet: Connect private VMs/services to AWS without Elastic IP.
+
+Alternative to ngrok: Lightweight and self-hosted.
+
+
+✅ Example:
+
+Local Nginx at 127.0.0.1:8080.
+
+AWS EC2 runs frps.
+
+Local machine runs frpc tunneling port 8080 → AWS EC2 port 80.
+
+Access via http://AWS-Public-IP.
+
+
+
+---
+
+⚡ Key Difference:
+
+Traefik → Cloud/K8s-native reverse proxy & ingress (production use).
+
+FRP → Tunneling local/private services via public server (dev/testing use).
+
+
+---
