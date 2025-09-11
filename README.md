@@ -251,6 +251,119 @@ Modern JIT compilers (Java HotSpot, PyPy, V8 for JS) bridge the gap: portability
 
 
 
+# OOP Concepts :- 
+
+
+1. Class & Object
+
+Class: Blueprint with variables + methods.
+
+Object: Instance of a class. Real entity
+
+
+
+---
+
+2. Encapsulation
+
+Combine data + methods.
+
+Controlled access with private, protected, public.
+
+
+
+---
+
+3. Abstraction
+
+Hide implementation, expose interface.
+
+Achieved with abstract classes / pure virtual functions.
+
+
+
+---
+
+4. Inheritance
+
+Deriving new classes from base classes.
+
+Types: Single, Multilevel, Multiple, Hierarchical, Hybrid.
+
+
+
+---
+
+5. Polymorphism
+
+Compile-time: Function overloading, operator overloading.
+
+Runtime: Virtual functions → method overriding.
+
+
+
+---
+
+6. Method Hiding
+
+Definition: When a derived class defines a function with the same name as one in the base class, but without virtual keyword, the base class method gets hidden (not overridden).
+
+#include <iostream>
+using namespace std;
+
+class Base {
+public:
+    void display() { cout << "Base display\n"; }
+};
+
+class Derived : public Base {
+public:
+    void display() { cout << "Derived display\n"; }  // hides Base::display
+};
+
+int main() {
+    Derived d;
+    d.display();      // Calls Derived version
+    d.Base::display(); // Explicit call to Base version
+}
+
+
+
+7. Constructors & Destructors
+
+Constructor: Auto-invoked at object creation.
+
+Destructor: Auto-invoked at object destruction.
+
+
+
+---
+
+8. Friend Functions & Operator Overloading
+
+Friend Function: External function that can access private data.
+
+Operator Overloading: Redefine operators for objects.
+
+
+
+---
+
+🔑 Final Takeaways :-
+
+Encapsulation + Abstraction → Organize & simplify.
+
+Inheritance + Polymorphism → Reuse & flexibility.
+
+Method Hiding → Replaces base method (unless explicitly called).
+
+Constructors/Destructors → Object lifecycle.
+
+Friends & Overloading → Extra power/flexibility.
+
+
+
+
 # AI, Data Science, and Acceleration (10/09/25 to 11/09/25) 
 
 
