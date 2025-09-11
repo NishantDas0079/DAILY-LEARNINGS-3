@@ -352,3 +352,181 @@ PCIE → High-speed bus connecting CPU ↔ GPU/accelerators.
 
 
 ---
+
+
+
+
+
+# Cloud Computing (9/09/25) 
+
+
+🌐 Exposing Nginx on AWS + Securing with Let’s Encrypt
+
+1. Setup AWS VM (EC2 Instance) :-
+
+Launch an EC2 Instance (Ubuntu/Debian/RedHat).
+
+Assign a Public IP (or Elastic IP for permanence).
+
+Security Group: Open ports → 22 (SSH), 80 (HTTP), 443 (HTTPS).
+
+
+
+---
+
+2. Install Nginx :-
+
+sudo apt update
+sudo apt install nginx -y
+
+Start service:
+
+
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+Verify: Visit http://<Public-IP> → Default Nginx page should appear.
+
+
+
+---
+
+3. Expose Nginx on Public IP :-
+
+AWS automatically maps Public IP → Private IP.
+
+Ensure UFW / iptables allows 80, 443:
+
+
+sudo ufw allow 'Nginx Full'
+
+Test: Access via browser → http://<EC2-Public-IP>.
+
+
+
+---
+
+4. Map Domain Name (Optional, Recommended) :-
+
+Buy/register a domain (Route53, GoDaddy, etc.).
+
+Create an A Record → Point domain → EC2 Public IP.
+
+Test: http://yourdomain.com.
+
+
+
+---
+
+5. Install Certbot (Let’s Encrypt):- 
+
+Install:
+
+
+sudo apt install certbot python3-certbot-nginx -y
+
+Obtain SSL Certificate:
+
+
+sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
+
+Certbot will:
+
+Edit Nginx config.
+
+Redirect HTTP → HTTPS.
+
+Install certificates in /etc/letsencrypt/.
+
+
+
+
+---
+
+6. Auto-Renew SSL :- 
+
+Certificates valid 90 days.
+
+Enable cron renewal:
+
+
+sudo systemctl enable certbot.timer
+sudo systemctl start certbot.timer
+
+Test renewal:
+
+
+sudo certbot renew --dry-run
+
+
+---
+
+7. Final Verification :- 
+
+Access site via:
+
+https://yourdomain.com → Should show 🔒 Secure Padlock.
+
+
+Nginx config (/etc/nginx/sites-available/default) should auto-contain HTTPS blocks:
+
+
+server {
+    listen 443 ssl;
+    server_name yourdomain.com www.yourdomain.com;
+    ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
+}
+
+
+---
+
+
+Exposing Nginx using K3s on AWS :-
+
+
+---
+
+1. Install K3s (Single Node Master on AWS VM)
+
+curl -sfL https://get.k3s.io | sh -
+
+Verify:
+
+sudo kubectl get nodes
+
+
+---
+
+2. Deploy Nginx on K3s :-
+
+sudo kubectl create deployment nginx --image=nginx
+
+Check pods:
+
+sudo kubectl get pods
+
+
+---
+
+3. Expose Nginx Service :-
+
+Option A: NodePort (Basic Exposure)
+
+sudo kubectl expose deployment nginx --type=NodePort --port=80
+sudo kubectl get svc
+
+Note the NodePort (e.g., 30080).
+
+Access via:
+
+http://<AWS-Public-IP>:<NodePort>
+
+
+
+---
+
+
+# Multiple Approaches for hosting website in AWS
+
+Apache (Service) → Docker → Minikube → Kubernetes → AWS private cloud hosting.
